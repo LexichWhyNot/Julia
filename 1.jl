@@ -1,81 +1,38 @@
-using HorizonSideRobots
-# a=0
-# while !isborder(r,Sud)
-# move!(r,Sud)
-# end
-# while !isborder(r,Ost)
-#     move!(r,Ost)
-# end
-# while !isborder(r,Nord)
-#     while !isborder(r,West)
-#         putmarker!(r)
-#         move!(r,West)
-#        global a=a+1
-#     end
-#     putmarker!(r)
-#     move!(r, Nord)
-#     for i in 1:a
-#         putmarker!(r)
-#         move!(r,Ost)
-#     end
-#     move!(r,West)
-#     global a=0
-#     if !isborder(r,Nord)
-#         move!(r,Nord)
-#     end
-#     if !isborder(r,West)
-#         move!(r,West)
-#     end
-# end
-# while !isborder(r,West)
-#     putmarker!(r)
-#     move!(r, West)
-# end
-# putmarker!(r)
-y=0
-x=0
-xr=0
-yr=0
-while (!isborder(r,Nord) || !isborder(r,West))
-    while !isborder(r,Nord) 
-        move!(r,Nord)
-        global y=y+1
+using  HorizonSideRobots
+
+function xkross!(r::Robot)
+    for side in ((Nord,Ost), (Sud,Ost), (Sud, West), (Nord, West))
+        luch!(r,side)
     end
-    while !isborder(r,West) 
-        move!(r,West)
-        global x=x+1
+    putmarker!(r)
+end
+
+function moveformark!(r,side)
+    while ismarker(r)
+        move!(r,side)
     end
 end
-function perimetr(side) 
+
+function luch!(r,side)
+    markline!(r,side)
+    moveformark!(r,inverse(side))
+end
+
+function markline!(r,side)
     while !isborder(r,side)
-    move!(r,side)
+        move!(r,side)
+        putmarker!(r)
     end
 end
-putmarker!(r)
-perimetr(Ost)
-putmarker!(r)
-perimetr(Sud)
-putmarker!(r)
-perimetr(West)
-putmarker!(r)
-perimetr(Nord)
-while (xr!=x ||  yr!=y)
-    while (yr!=y && !isborder(r,Sud))
-        move!(r,Sud)
-        global yr=yr+1
-    end
-    while (xr!=x && !isborder(r,Ost))
-        move!(r,Ost)
-        global xr=xr+1
-    end
-    while (yr!=y && !isborder(r,Nord))
-        move!(r,Nord)
-        global yr=yr-1
-    end  
-end
 
 
+inverse(s::HorizonSide)=HorizonSide((Int(s)+2)%4)
+inverse(s::NTuple)=inverse.(s)
+
+#import HorizonSideRobots
+HorizonSideRobots.isborder(r,side::NTuple) = isborder(r,side[1])||isborder(r,side[2])
+HorizonSideRobots.move!(r,side::NTuple) = for s in side move!(r,s) end
 
 
+xkross!(r)
 
-           
