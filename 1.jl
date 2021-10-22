@@ -1,38 +1,19 @@
-using  HorizonSideRobots
+function mark_wrapper(a,b,rob)
+        while !isborder(rob,a)
+            move!(rob,a)
+            putmarker!(rob)
+        end
 
-function xkross!(r::Robot)
-    for side in ((Nord,Ost), (Sud,Ost), (Sud, West), (Nord, West))
-        luch!(r,side)
-    end
-    putmarker!(r)
-end
+        while ismarker(rob)
+            move!(rob,b)
+        end
+end 
 
-function moveformark!(r,side)
-    while ismarker(r)
-        move!(r,side)
-    end
-end
-
-function luch!(r,side)
-    markline!(r,side)
-    moveformark!(r,inverse(side))
-end
-
-function markline!(r,side)
-    while !isborder(r,side)
-        move!(r,side)
-        putmarker!(r)
+function mark_kross()
+    for side in (Nord,Ost,Sud,West)
+        a = side 
+        b = HorizonSide(mod(Int(side) + 2,4))
+        mark_wrapper(a,b,r)          
     end
 end
-
-
-inverse(s::HorizonSide)=HorizonSide((Int(s)+2)%4)
-inverse(s::NTuple)=inverse.(s)
-
-#import HorizonSideRobots
-HorizonSideRobots.isborder(r,side::NTuple) = isborder(r,side[1])||isborder(r,side[2])
-HorizonSideRobots.move!(r,side::NTuple) = for s in side move!(r,s) end
-
-
-xkross!(r)
 
